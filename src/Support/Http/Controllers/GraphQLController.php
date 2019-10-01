@@ -43,12 +43,12 @@ class GraphQLController extends Controller
      */
     public function __construct(
         GraphQL $graphQL,
-        EventsDispatcher $eventsDispatcher,
+        // EventsDispatcher $eventsDispatcher,
         CreatesResponse $createsResponse,
         Container $container
     ) {
         $this->graphQL = $graphQL;
-        $this->eventsDispatcher = $eventsDispatcher;
+        // $this->eventsDispatcher = $eventsDispatcher;
         $this->createsResponse = $createsResponse;
         $this->container = $container;
     }
@@ -59,11 +59,13 @@ class GraphQLController extends Controller
      * @param  \Nuwave\Lighthouse\Execution\GraphQLRequest  $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function query(GraphQLRequest $request)
+    public function query()
     {
-        $this->eventsDispatcher->dispatch(
-            new StartRequest($request)
-        );
+        // $this->eventsDispatcher->dispatch(
+        //     new StartRequest($request)
+        // );
+
+        $request = app(GraphQLRequest::class);
 
         $result = $request->isBatched()
             ? $this->executeBatched($request)

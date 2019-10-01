@@ -4,7 +4,7 @@ namespace Nuwave\Lighthouse\Support;
 
 use Closure;
 use Illuminate\Support\Collection;
-use Illuminate\Pipeline\Pipeline as BasePipeline;
+use TippingCanoe\Dealsix\Extensions\Illuminate\Pipeline\Pipeline as BasePipeline;
 
 class Pipeline extends BasePipeline
 {

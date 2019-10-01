@@ -25,7 +25,8 @@ class LighthouseRequest extends BaseRequest
 
         // If the request has neither a query, nor an operationName,
         // we assume we are resolving a batched query.
-        if (! $request->hasAny('query', 'operationName')) {
+        // if (! $request->hasAny('query', 'operationName')) {
+        if (!($request->has('query') || $request->has('operationName'))) {
             $this->batchIndex = 0;
         }
     }

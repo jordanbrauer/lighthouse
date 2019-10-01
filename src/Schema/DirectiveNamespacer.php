@@ -19,9 +19,9 @@ class DirectiveNamespacer
      * @param  \Illuminate\Contracts\Events\Dispatcher  $dispatcher
      * @return void
      */
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct()
     {
-        $this->dispatcher = $dispatcher;
+        // $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -38,13 +38,13 @@ class DirectiveNamespacer
                 config('lighthouse.namespaces.directives'),
 
                 // Plugin developers defined directives
-                $this->dispatcher->dispatch(new RegisterDirectiveNamespaces),
+                // $this->dispatcher->dispatch(new RegisterDirectiveNamespaces),
 
                 // Lighthouse defined directives
                 'Nuwave\\Lighthouse\\Schema\\Directives',
             ]))
             ->flatten()
-            ->filter()
+            ->filter(function ($a) { return $a; })
             ->all();
     }
 }

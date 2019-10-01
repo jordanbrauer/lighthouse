@@ -58,26 +58,27 @@ class LighthouseServiceProvider extends ServiceProvider
      * @param  \Illuminate\Contracts\Config\Repository  $configRepository
      * @return void
      */
-    public function boot(ValidationFactory $validationFactory, ConfigRepository $configRepository): void
+    public function boot(): void
     {
-        $this->publishes([
-            __DIR__.'/../config/config.php' => $this->app->make('path.config').DIRECTORY_SEPARATOR.'lighthouse.php',
-        ], 'config');
+        // $this->publishes([
+        //     __DIR__.'/../config/config.php' => $this->app->make('path.config').DIRECTORY_SEPARATOR.'lighthouse.php',
+        // ], 'config');
 
-        $this->publishes([
-            __DIR__.'/../assets/default-schema.graphql' => $configRepository->get('lighthouse.schema.register'),
-        ], 'schema');
+        // $this->publishes([
+        //     __DIR__.'/../assets/default-schema.graphql' => $configRepository->get('lighthouse.schema.register'),
+        // ], 'schema');
 
-        $this->loadRoutesFrom(__DIR__.'/Support/Http/routes.php');
+        // $this->loadRoutesFrom(__DIR__.'/Support/Http/routes.php');
+        \Route::group([], function () {
+            require __DIR__.'/Support/Http/routes.php';
+        });
 
-        $validationFactory->resolver(
-            function ($translator, array $data, array $rules, array $messages, array $customAttributes): Validator {
-                // This determines whether we are resolving a GraphQL field
-                return Arr::has($customAttributes, ['root', 'context', 'resolveInfo'])
-                    ? new GraphQLValidator($translator, $data, $rules, $messages, $customAttributes)
-                    : new Validator($translator, $data, $rules, $messages, $customAttributes);
-            }
-        );
+        \Validator::resolver(function ($translator, array $data, array $rules, array $messages, array $customAttributes): Validator {
+            // This determines whether we are resolving a GraphQL field
+            return Arr::has($customAttributes, ['root', 'context', 'resolveInfo'])
+                ? new GraphQLValidator($translator, $data, $rules, $messages, $customAttributes)
+                : new Validator($translator, $data, $rules, $messages, $customAttributes);
+        });
     }
 
     /**
@@ -104,7 +105,9 @@ class LighthouseServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'lighthouse');
+        $config = $this->app['config']->get('lighthouse', []);
+        $this->app['config']->set('lighthouse', array_merge(require __DIR__.'/../config/config.php', $config));
+        // $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'lighthouse');
 
         $this->app->singleton(GraphQL::class);
 
@@ -118,7 +121,7 @@ class LighthouseServiceProvider extends ServiceProvider
 
         $this->app->bind(GlobalIdContract::class, GlobalId::class);
 
-        $this->app->singleton(GraphQLRequest::class, function (Container $app): GraphQLRequest {
+        $this->app->singleton(GraphQLRequest::class, function ($app): GraphQLRequest {
             /** @var \Illuminate\Http\Request $request */
             $request = $app->make('request');
 
@@ -163,19 +166,19 @@ class LighthouseServiceProvider extends ServiceProvider
             );
         });
 
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                ClearCacheCommand::class,
-                IdeHelperCommand::class,
-                InterfaceCommand::class,
-                MutationCommand::class,
-                PrintSchemaCommand::class,
-                QueryCommand::class,
-                ScalarCommand::class,
-                SubscriptionCommand::class,
-                UnionCommand::class,
-                ValidateSchemaCommand::class,
-            ]);
-        }
+        // if ($this->app->runningInConsole()) {
+        //     $this->commands([
+        //         ClearCacheCommand::class,
+        //         IdeHelperCommand::class,
+        //         InterfaceCommand::class,
+        //         MutationCommand::class,
+        //         PrintSchemaCommand::class,
+        //         QueryCommand::class,
+        //         ScalarCommand::class,
+        //         SubscriptionCommand::class,
+        //         UnionCommand::class,
+        //         ValidateSchemaCommand::class,
+        //     ]);
+        // }
     }
 }

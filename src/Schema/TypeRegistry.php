@@ -4,7 +4,7 @@ namespace Nuwave\Lighthouse\Schema;
 
 use Closure;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Support\Collection;
+use TippingCanoe\Dealsix\Extensions\Illuminate\Support\Collection;
 use Nuwave\Lighthouse\Support\Utils;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\EnumType;
@@ -161,6 +161,7 @@ class TypeRegistry
                 /** @var \Nuwave\Lighthouse\Support\Contracts\TypeResolver $typeResolver */
                 $typeResolver = $this->directiveFactory->createSingleDirectiveOfType($definition, TypeResolver::class);
 
+
                 if ($typeResolver) {
                     return $typeResolver->resolveNode($value);
                 }
@@ -209,7 +210,7 @@ class TypeRegistry
         return new EnumType([
             'name' => $enumDefinition->name->value,
             'description' => data_get($enumDefinition->description, 'value'),
-            'values' => (new Collection($enumDefinition->values))
+            'values' => (collect(iterator_to_array($enumDefinition->values)))
                 ->mapWithKeys(function (EnumValueDefinitionNode $field): array {
                     // Get the directive that is defined on the field itself
                     $directive = ASTHelper::directiveDefinition($field, 'enum');
@@ -275,7 +276,7 @@ class TypeRegistry
             'description' => data_get($objectDefinition->description, 'value'),
             'fields' => $this->resolveFieldsFunction($objectDefinition),
             'interfaces' => function () use ($objectDefinition): array {
-                return (new Collection($objectDefinition->interfaces))
+                return (collect($objectDefinition->interfaces))
                     ->map(function (NamedTypeNode $interface): Type {
                         return $this->get($interface->name->value);
                     })
@@ -293,15 +294,20 @@ class TypeRegistry
     protected function resolveFieldsFunction($definition): Closure
     {
         return function () use ($definition): array {
-            return (new Collection($definition->fields))
+            return (collect(iterator_to_array($definition->fields)))
                 ->mapWithKeys(function (FieldDefinitionNode $fieldDefinition) use ($definition): array {
+                    // dump($fieldDefinition);
                     $fieldValue = new FieldValue(
                         new TypeValue($definition),
                         $fieldDefinition
                     );
 
+                    $r = app(FieldFactory::class)->handle($fieldValue);
+                    // dump($r);
+
                     return [
-                        $fieldDefinition->name->value => app(FieldFactory::class)->handle($fieldValue),
+                        $fieldDefinition->name->value => $r,
+                        // $fieldDefinition->name->value => app(FieldFactory::class)->handle($fieldValue),
                     ];
                 })
                 ->toArray();
@@ -427,7 +433,7 @@ class TypeRegistry
             'name' => $nodeName,
             'description' => data_get($unionDefinition->description, 'value'),
             'types' => function () use ($unionDefinition): array {
-                return (new Collection($unionDefinition->types))
+                return (collect($unionDefinition->types))
                     ->map(function (NamedTypeNode $type): Type {
                         return $this->get(
                             $type->name->value

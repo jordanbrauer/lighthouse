@@ -53,7 +53,7 @@ return [
     */
 
     'schema' => [
-        'register' => base_path('graphql/schema.graphql'),
+        'register' => app_path('schema.graphql'),
     ],
 
     /*
@@ -68,9 +68,9 @@ return [
     */
 
     'cache' => [
-        'enable' => env('LIGHTHOUSE_CACHE_ENABLE', env('APP_ENV') !== 'local'),
-        'key' => env('LIGHTHOUSE_CACHE_KEY', 'lighthouse-schema'),
-        'ttl' => env('LIGHTHOUSE_CACHE_TTL', null),
+        // 'enable' => env('LIGHTHOUSE_CACHE_ENABLE', env('APP_ENV') !== 'local'),
+        // 'key' => env('LIGHTHOUSE_CACHE_KEY', 'lighthouse-schema'),
+        // 'ttl' => env('LIGHTHOUSE_CACHE_TTL', null),
     ],
 
     /*
@@ -86,7 +86,8 @@ return [
 
     'namespaces' => [
         'models' => ['App', 'App\\Models'],
-        'queries' => 'App\\GraphQL\\Queries',
+        'queries' => 'TippingCanoe\\Dealsix\\Application\\Client\\DataStore\\Resolvers',
+        'fields' => 'TippingCanoe\\Dealsix\\Application\\Client\\DataStore\\Resolvers',
         'mutations' => 'App\\GraphQL\\Mutations',
         'subscriptions' => 'App\\GraphQL\\Subscriptions',
         'interfaces' => 'App\\GraphQL\\Interfaces',
@@ -214,19 +215,19 @@ return [
         /*
          * Determines if broadcasts should be queued by default.
          */
-        'queue_broadcasts' => env('LIGHTHOUSE_QUEUE_BROADCASTS', true),
+        // 'queue_broadcasts' => env('LIGHTHOUSE_QUEUE_BROADCASTS', true),
 
         /*
          * Default subscription storage.
          *
          * Any Laravel supported cache driver options are available here.
          */
-        'storage' => env('LIGHTHOUSE_SUBSCRIPTION_STORAGE', 'redis'),
+        // 'storage' => env('LIGHTHOUSE_SUBSCRIPTION_STORAGE', 'redis'),
 
         /*
          * Default subscription broadcaster.
          */
-        'broadcaster' => env('LIGHTHOUSE_BROADCASTER', 'pusher'),
+        // 'broadcaster' => env('LIGHTHOUSE_BROADCASTER', 'pusher'),
 
         /*
          * Subscription broadcasting drivers with config options.

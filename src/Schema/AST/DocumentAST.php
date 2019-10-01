@@ -81,6 +81,7 @@ class DocumentAST implements Serializable
             } elseif ($definition instanceof DirectiveDefinitionNode) {
                 $instance->directives[$definition->name->value] = $definition;
             } else {
+                // dump($definition);
                 throw new Exception(
                     'Unknown definition type'
                 );

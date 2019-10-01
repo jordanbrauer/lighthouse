@@ -30,7 +30,8 @@ class Context implements GraphQLContext
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->user = $request->user();
+        // $this->user = $request->user();
+        $this->user = \Auth::user();
     }
 
     /**

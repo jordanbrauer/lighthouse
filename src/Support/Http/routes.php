@@ -6,9 +6,9 @@ if ($routeConfig = config('lighthouse.route')) {
     /** @var \Illuminate\Contracts\Routing\Registrar $router */
     $router = app('router');
 
-    $method = 'addRoute';
+    $method = 'match';
     if (Str::startsWith(app()->version(), '5.5.')) {
-        $method = 'match';
+        $method = 'addRoute';
     }
 
     $actions = [

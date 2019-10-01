@@ -15,6 +15,6 @@ class SingleResponse implements CreatesResponse
      */
     public function createResponse(array $result): Response
     {
-        return response($result);
+        return \Response::json($result);
     }
 }

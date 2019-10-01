@@ -86,13 +86,13 @@ class GraphQL
     public function __construct(
         SchemaBuilder $schemaBuilder,
         Pipeline $pipeline,
-        EventDispatcher $eventDispatcher,
+        // EventDispatcher $eventDispatcher,
         ASTBuilder $astBuilder,
         CreatesContext $createsContext
     ) {
         $this->schemaBuilder = $schemaBuilder;
         $this->pipeline = $pipeline;
-        $this->eventDispatcher = $eventDispatcher;
+        // $this->eventDispatcher = $eventDispatcher;
         $this->astBuilder = $astBuilder;
         $this->createsContext = $createsContext;
     }
@@ -162,9 +162,9 @@ class GraphQL
         // This allows tracking the time for batched queries independently.
         $this->prepSchema();
 
-        $this->eventDispatcher->dispatch(
-            new StartExecution
-        );
+        // $this->eventDispatcher->dispatch(
+        //     new StartExecution
+        // );
 
         $result = GraphQLBase::executeQuery(
             $this->executableSchema,
@@ -177,41 +177,41 @@ class GraphQL
             $this->getValidationRules() + DocumentValidator::defaultRules()
         );
 
-        /** @var \Nuwave\Lighthouse\Execution\ExtensionsResponse[] $extensionsResponses */
-        $extensionsResponses = (array) $this->eventDispatcher->dispatch(
-            new BuildExtensionsResponse
-        );
+        // /** @var \Nuwave\Lighthouse\Execution\ExtensionsResponse[] $extensionsResponses */
+        // $extensionsResponses = (array) $this->eventDispatcher->dispatch(
+        //     new BuildExtensionsResponse
+        // );
 
-        foreach ($extensionsResponses as $extensionsResponse) {
-            if ($extensionsResponse) {
-                $result->extensions[$extensionsResponse->key()] = $extensionsResponse->content();
-            }
-        }
+        // foreach ($extensionsResponses as $extensionsResponse) {
+        //     if ($extensionsResponse) {
+        //         $result->extensions[$extensionsResponse->key()] = $extensionsResponse->content();
+        //     }
+        // }
 
-        $result->setErrorsHandler(
-            function (array $errors, callable $formatter): array {
-                // User defined error handlers, implementing \Nuwave\Lighthouse\Execution\ErrorHandler
-                // This allows the user to register multiple handlers and pipe the errors through.
-                $handlers = config('lighthouse.error_handlers', []);
+        // $result->setErrorsHandler(
+        //     function (array $errors, callable $formatter): array {
+        //         // User defined error handlers, implementing \Nuwave\Lighthouse\Execution\ErrorHandler
+        //         // This allows the user to register multiple handlers and pipe the errors through.
+        //         $handlers = config('lighthouse.error_handlers', []);
 
-                return array_map(
-                    function (Error $error) use ($handlers, $formatter) {
-                        return $this->pipeline
-                            ->send($error)
-                            ->through($handlers)
-                            ->then(function (Error $error) use ($formatter) {
-                                return $formatter($error);
-                            });
-                    },
-                    $errors
-                );
-            }
-        );
+        //         return array_map(
+        //             function (Error $error) use ($handlers, $formatter) {
+        //                 return $this->pipeline
+        //                     ->send($error)
+        //                     ->through($handlers)
+        //                     ->then(function (Error $error) use ($formatter) {
+        //                         return $formatter($error);
+        //                     });
+        //             },
+        //             $errors
+        //         );
+        //     }
+        // );
 
         // Allow listeners to manipulate the result after each resolved query
-        $this->eventDispatcher->dispatch(
-            new ManipulateResult($result)
-        );
+        // $this->eventDispatcher->dispatch(
+        //     new ManipulateResult($result)
+        // );
 
         return $result;
     }
@@ -224,9 +224,8 @@ class GraphQL
     public function prepSchema(): Schema
     {
         if (empty($this->executableSchema)) {
-            $this->executableSchema = $this->schemaBuilder->build(
-                $this->documentAST()
-            );
+            $ast = $this->documentAST();
+            $this->executableSchema = $this->schemaBuilder->build($ast);
         }
 
         return $this->executableSchema;

@@ -55,12 +55,12 @@ class ASTHelper
      */
     public static function mergeUniqueNodeList($original, $addition, bool $overwriteDuplicates = false): NodeList
     {
-        $newNames = (new Collection($addition))
+        $newNames = (collect($addition))
             ->pluck('name.value')
             ->filter()
             ->all();
 
-        $remainingDefinitions = (new Collection($original))
+        $remainingDefinitions = (collect($original))
             ->reject(function ($definition) use ($newNames, $overwriteDuplicates): bool {
                 $oldName = $definition->name->value;
                 $collisionOccurred = in_array(
@@ -128,7 +128,7 @@ class ASTHelper
      */
     public static function directiveHasArgument(DirectiveNode $directiveDefinition, string $name): bool
     {
-        return (new Collection($directiveDefinition->arguments))
+        return (collect($directiveDefinition->arguments))
             ->contains(function (ArgumentNode $argumentNode) use ($name): bool {
                 return $argumentNode->name->value === $name;
             });
@@ -142,7 +142,7 @@ class ASTHelper
      */
     public static function directiveArgValue(DirectiveNode $directive, string $name, $default = null)
     {
-        $arg = (new Collection($directive->arguments))
+        $arg = (collect(iterator_to_array($directive->arguments)))
             ->first(function (ArgumentNode $argumentNode) use ($name): bool {
                 return $argumentNode->name->value === $name;
             });
@@ -201,10 +201,21 @@ class ASTHelper
      */
     public static function directiveDefinition(Node $definitionNode, string $name): ?DirectiveNode
     {
-        return (new Collection($definitionNode->directives))
-            ->first(function (DirectiveNode $directiveDefinitionNode) use ($name): bool {
-                return $directiveDefinitionNode->name->value === $name;
-            });
+        $collection = (collect(iterator_to_array($definitionNode->directives)));
+
+        // if ($definitionNode->name->value === 'threads') {
+        //     // dump($definitionNode);
+        //     // dump($definitionNode->directives);
+        //     // dump(iterator_to_array($definitionNode->directives));
+        //     dump($collection);
+        //     // dump($collection->first(function ($n) {
+        //     //     return $n;
+        //     // }));
+        // }
+
+        return $collection->first(function (DirectiveNode $directiveDefinitionNode) use ($name): bool {
+            return $directiveDefinitionNode->name->value === $name;
+        });
     }
 
     /**

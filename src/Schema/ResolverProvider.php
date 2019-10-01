@@ -24,12 +24,12 @@ class ResolverProvider implements ProvidesResolver
     {
         if ($fieldValue->parentIsRootType()) {
             // TODO use only __invoke in v5
-            $resolverClass = $this->findResolverClass($fieldValue, 'resolve');
-            if ($resolverClass) {
-                return Closure::fromCallable(
-                    [app($resolverClass), 'resolve']
-                );
-            }
+            // $resolverClass = $this->findResolverClass($fieldValue, 'resolve');
+            // if ($resolverClass) {
+            //     return Closure::fromCallable(
+            //         [app($resolverClass), 'resolve']
+            //     );
+            // }
 
             $resolverClass = $this->findResolverClass($fieldValue, '__invoke');
             if ($resolverClass) {
@@ -45,6 +45,10 @@ class ResolverProvider implements ProvidesResolver
             }
         }
 
+        if ($fieldValue->getFieldName() === 'threads') {
+            dump($fieldValue->getReturnType());
+        }
+
         return Closure::fromCallable(
             Executor::getDefaultFieldResolver()
         );
@@ -58,7 +62,7 @@ class ResolverProvider implements ProvidesResolver
     protected function findResolverClass(FieldValue $fieldValue, string $methodName): ?string
     {
         return Utils::namespaceClassname(
-            Str::studly($fieldValue->getFieldName()),
+            Str::studly($fieldValue->getFieldName()).'Resolver',
             $fieldValue->defaultNamespacesForParent(),
             function (string $class) use ($methodName): bool {
                 return method_exists($class, $methodName);

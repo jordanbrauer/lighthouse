@@ -119,15 +119,15 @@ class FieldFactory
         ArgumentFactory $argumentFactory,
         Pipeline $pipeline,
         ProvidesResolver $providesResolver,
-        ProvidesSubscriptionResolver $providesSubscriptionResolver,
-        ValidationFactory $validationFactory
+        ProvidesSubscriptionResolver $providesSubscriptionResolver
+        // ValidationFactory $validationFactory
     ) {
         $this->directiveFactory = $directiveFactory;
         $this->argumentFactory = $argumentFactory;
         $this->pipeline = $pipeline;
         $this->providesResolver = $providesResolver;
         $this->providesSubscriptionResolver = $providesSubscriptionResolver;
-        $this->validationFactory = $validationFactory;
+        // $this->validationFactory = $validationFactory;
     }
 
     /**
@@ -432,7 +432,7 @@ class FieldFactory
         }
 
         /** @var \Nuwave\Lighthouse\Execution\GraphQLValidator $validator */
-        $validator = $this->validationFactory->make(
+        $validator = \Validator::make(
             $this->args,
             $this->rules,
             $this->messages,

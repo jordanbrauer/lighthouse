@@ -55,11 +55,11 @@ class ASTBuilder
      */
     public function __construct(
         DirectiveFactory $directiveFactory,
-        EventDispatcher $eventDispatcher,
+        // EventDispatcher $eventDispatcher,
         SchemaSourceProvider $schemaSourceProvider
     ) {
         $this->directiveFactory = $directiveFactory;
-        $this->eventDispatcher = $eventDispatcher;
+        // $this->eventDispatcher = $eventDispatcher;
         $this->schemaSourceProvider = $schemaSourceProvider;
     }
 
@@ -75,16 +75,18 @@ class ASTBuilder
         // Allow to register listeners that add in additional schema definitions.
         // This can be used by plugins to hook into the schema building process
         // while still allowing the user to add in their schema as usual.
-        $additionalSchemas = (array) $this->eventDispatcher->dispatch(
-            new BuildSchemaString($schemaString)
-        );
+        $additionalSchemas = [];
+        // $additionalSchemas = (array) $this->eventDispatcher->dispatch(
+        //     new BuildSchemaString($schemaString)
+        // );
 
         $this->documentAST = DocumentAST::fromSource(
             implode(
                 PHP_EOL,
-                Arr::prepend($additionalSchemas, $schemaString)
+                array_prepend($additionalSchemas, $schemaString)
             )
         );
+
 
         // Apply transformations from directives
         $this->applyTypeDefinitionManipulators();
@@ -99,9 +101,9 @@ class ASTBuilder
         // Listeners may manipulate the DocumentAST that is passed by reference
         // into the ManipulateAST event. This can be useful for extensions
         // that want to programmatically change the schema.
-        $this->eventDispatcher->dispatch(
-            new ManipulateAST($this->documentAST)
-        );
+        // $this->eventDispatcher->dispatch(
+        //     new ManipulateAST($this->documentAST)
+        // );
 
         return $this->documentAST;
     }
@@ -219,25 +221,25 @@ class ASTBuilder
                 type PaginatorInfo {
                   "Total count of available items in the page."
                   count: Int!
-                
+
                   "Current pagination page."
                   currentPage: Int!
-                
+
                   "Index of first item in the current page."
                   firstItem: Int
-                
+
                   "If collection has more pages."
                   hasMorePages: Boolean!
-                
+
                   "Index of last item in the current page."
                   lastItem: Int
-                
+
                   "Last page number of the collection."
                   lastPage: Int!
-                
+
                   "Number of items per page in the collection."
                   perPage: Int!
-                
+
                   "Total items available in the collection."
                   total: Int!
                 }
@@ -249,25 +251,25 @@ class ASTBuilder
                 type PageInfo {
                   "When paginating forwards, are there more items?"
                   hasNextPage: Boolean!
-                
+
                   "When paginating backwards, are there more items?"
                   hasPreviousPage: Boolean!
-                
+
                   "When paginating backwards, the cursor to continue."
                   startCursor: String
-                
+
                   "When paginating forwards, the cursor to continue."
                   endCursor: String
-                
+
                   "Total number of node in connection."
                   total: Int
-                
+
                   "Count of nodes in current request."
                   count: Int
-                
+
                   "Current page of request."
                   currentPage: Int
-                
+
                   "Last page in connection."
                   lastPage: Int
                 }
@@ -312,11 +314,11 @@ class ASTBuilder
         // Double slashes to escape the slashes in the namespace.
         $this->documentAST->setTypeDefinition(
             PartialParser::interfaceTypeDefinition(<<<GRAPHQL
-"Node global interface"	
-interface Node @interface(resolveType: "Nuwave\\\Lighthouse\\\Schema\\\NodeRegistry@resolveType") {	
+"Node global interface"
+interface Node @interface(resolveType: "Nuwave\\\Lighthouse\\\Schema\\\NodeRegistry@resolveType") {
 "Global identifier that can be used to resolve any Node implementation."
-$globalId: ID!	
-}	
+$globalId: ID!
+}
 GRAPHQL
             )
         );

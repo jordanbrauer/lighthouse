@@ -25,9 +25,9 @@ abstract class ValidationDirective extends BaseDirective implements FieldMiddlew
      * @param  \Illuminate\Contracts\Validation\Factory  $validationFactory
      * @return void
      */
-    public function __construct(ValidationFactory $validationFactory)
+    public function __construct()
     {
-        $this->validationFactory = $validationFactory;
+        // $this->validationFactory = \Validator::get
     }
 
     /**
@@ -46,8 +46,9 @@ abstract class ValidationDirective extends BaseDirective implements FieldMiddlew
                 function ($root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) use ($resolver) {
                     $this->setResolverArguments($root, $args, $context, $resolveInfo);
 
-                    $validator = $this->validationFactory
-                        ->make(
+                    // $validator = $this->validationFactory
+                    //     ->make(
+                    $validator = \Validator::make(
                             $args,
                             $this->rules(),
                             $this->messages(),
