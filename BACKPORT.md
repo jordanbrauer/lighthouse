@@ -45,3 +45,8 @@ This file needed some heavy modification to prep the schema and execute the quer
 * remove/comment out event dispatcher DI and usage of the instance (**this should be replaced with Larvel 4.2 events**)
     - also commented out whatever the fuck `BuildExtensionsResponse` event and related code does...
 * change config calls to call consumer (published) config file before trying package's
+
+## AST (Abstract Syntax Tree) Builder
+
+* more commenting out of event dispatcher calls
+* switch `Arr::prepend` call to helper function `array_prepend` to allow for Dealsix polyfilling the function easily

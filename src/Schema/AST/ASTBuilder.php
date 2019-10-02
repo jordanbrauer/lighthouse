@@ -310,7 +310,7 @@ class ASTBuilder
             return;
         }
 
-        $globalId = config('lighthouse.global_id_field');
+        $globalId = config('lighthouse::global_id_field', config('lighthouse.global_id_field'));
         // Double slashes to escape the slashes in the namespace.
         $this->documentAST->setTypeDefinition(
             PartialParser::interfaceTypeDefinition(<<<GRAPHQL
