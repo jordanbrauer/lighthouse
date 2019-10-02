@@ -1,3 +1,11 @@
+# THIS IS A FORK AND BACKPORT OF LIGHTHOUSE FOR LARAVEL 4.2
+
+There are significant changes to the code in this project to make it work from Laravel 5.5/6.0 to Laravel 4.2. Such changes are listed below:
+
+**Please** visit [this document](/BACKPORT.md) to read a list of changes made.
+
+---
+
 <div align="center">
   <a href="https://www.lighthouse-php.com">
     <img src="logo.png" alt=lighthouse-logo" width="150" height="150">
