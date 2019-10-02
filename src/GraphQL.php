@@ -130,11 +130,7 @@ class GraphQL
         // If debugging is set to false globally, do not add GraphQL specific
         // debugging info either. If it is true, then we fetch the debug
         // level from the Lighthouse configuration.
-        return $result->toArray(
-            config('app.debug')
-                ? config('lighthouse.debug')
-                : false
-        );
+        return $result->toArray(config('app.debug') ? config('lighthouse::debug', config('lighthouse.debug')) : false);
     }
 
     /**
@@ -224,8 +220,7 @@ class GraphQL
     public function prepSchema(): Schema
     {
         if (empty($this->executableSchema)) {
-            $ast = $this->documentAST();
-            $this->executableSchema = $this->schemaBuilder->build($ast);
+            $this->executableSchema = $this->schemaBuilder->build($this->documentAST());
         }
 
         return $this->executableSchema;
@@ -239,9 +234,9 @@ class GraphQL
     protected function getValidationRules(): array
     {
         return [
-            QueryComplexity::class => new QueryComplexity(config('lighthouse.security.max_query_complexity', 0)),
-            QueryDepth::class => new QueryDepth(config('lighthouse.security.max_query_depth', 0)),
-            DisableIntrospection::class => new DisableIntrospection(config('lighthouse.security.disable_introspection', false)),
+            QueryComplexity::class => new QueryComplexity(config('lighthouse::security.max_query_complexity', config('lighthouse.security.max_query_complexity', 0))),
+            QueryDepth::class => new QueryDepth(config('lighthouse::security.max_query_depth', config('lighthouse.security.max_query_depth', 0))),
+            DisableIntrospection::class => new DisableIntrospection(config('lighthouse::security.disable_introspection', config('lighthouse.security.disable_introspection', false))),
         ];
     }
 
@@ -253,15 +248,14 @@ class GraphQL
     public function documentAST(): DocumentAST
     {
         if (empty($this->documentAST)) {
-            $this->documentAST = config('lighthouse.cache.enable')
-                ? app('cache')
-                    ->remember(
-                        config('lighthouse.cache.key'),
-                        config('lighthouse.cache.ttl'),
-                        function (): DocumentAST {
-                            return $this->astBuilder->build();
-                        }
-                    )
+            $this->documentAST = config('lighthouse::cache.enable', config('lighthouse.cache.enable'))
+                ? app('cache')->remember(
+                    config('lighthouse::cache.key', config('lighthouse.cache.key')),
+                    config('lighthouse::cache.ttl', config('lighthouse.cache.ttl')),
+                    function (): DocumentAST {
+                        return $this->astBuilder->build();
+                    }
+                )
                 : $this->astBuilder->build();
         }
 

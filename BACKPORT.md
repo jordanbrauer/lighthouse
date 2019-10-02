@@ -37,3 +37,11 @@ This file was pretty good out of the gate, except that
 
 * replace `response` helper function call with `Response::json` facade macro
     - implementing the `response()` helper function to work properly ~is~ was just not worth the time
+
+## GraphQL Entrypoint
+
+This file needed some heavy modification to prep the schema and execute the query without barfing errors and exceptions everywhere.
+
+* remove/comment out event dispatcher DI and usage of the instance (**this should be replaced with Larvel 4.2 events**)
+    - also commented out whatever the fuck `BuildExtensionsResponse` event and related code does...
+* change config calls to call consumer (published) config file before trying package's
