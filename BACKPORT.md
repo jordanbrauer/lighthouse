@@ -82,3 +82,8 @@ This file needed some heavy modification to prep the schema and execute the quer
 
 * remove check for resolvers implementing a `resolve` method (to be removed in Lighthouse v5 anyways) in favour of always calling `__invoke`
 * append "`Resolver`" to the studyly cased field name to attempt finding a class with the name (hard coded for now lol...)
+
+## Schema Stitcher
+
+* use Illuminate's file not found exception directly – not some stupid "contract"
+* use collection polyfill to provide functionality that we (Dealsix) are missing
