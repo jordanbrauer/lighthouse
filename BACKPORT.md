@@ -10,6 +10,12 @@ These changes do not really pertain to code itself, but are changes to the repos
 * deleted various meta data (dot) files in the root of the repository
 * removed generated documentation
 
+## Config File(s)
+
+The configuration file needed some modifications in order to not throw errors, due to helper functions not yet existing during the bootstrap process.
+
+* remove `env` helper function calls and simply assign the default/fallback value.
+
 ## Service Provider
 
 The `src/LighthouseServiceProvider.php` file need some minor modification to properly register the services and configurations.
