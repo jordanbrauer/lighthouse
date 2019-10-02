@@ -92,3 +92,16 @@ This file needed some heavy modification to prep the schema and execute the quer
 
 * use collection polyfill to provide functionality that we (Dealsix) are missing
 * call `iterator_to_array` on node lists that for whatever reason are not properly casted to array by collection polyfill
+
+## GraphQL Controller
+
+* remove DI for event dispatcher and comment out calls to event dispatching
+* construct request from `app` instead of DI through method arguments
+
+## Routes
+
+* switch default method for route additions from `addRoute` to `match` (`addRoute` missing from Laravel 4.2)
+
+## Pipeline
+
+* add polyfill for laravel 5 pipeline implementation
