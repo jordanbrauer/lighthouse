@@ -65,3 +65,7 @@ This file needed some heavy modification to prep the schema and execute the quer
 
 * more commenting out of all event dispatcher DI and event fire calls
 * provide closure to `filter` call on collection object to prevent missing argument exceptions
+
+## Validation Directive
+
+* remove DI for validation factory and use facade directly in code
