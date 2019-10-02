@@ -36,7 +36,7 @@ This file was pretty good out of the gate, except that
 ## Lighthouse Response (Single)
 
 * replace `response` helper function call with `Response::json` facade macro
-    - implementing the `response()` helper function to work properly ~is~ was just not worth the time
+    - implementing the `response()` helper function to work properly ~~is~~ was just not worth the time
 
 ## GraphQL Entrypoint
 
@@ -50,3 +50,9 @@ This file needed some heavy modification to prep the schema and execute the quer
 
 * more commenting out of event dispatcher calls
 * switch `Arr::prepend` call to helper function `array_prepend` to allow for Dealsix polyfilling the function easily
+
+
+## AST (Abstract Syntax Tree) Helper
+
+* use a polyfill version of the Laravel 5/6 collection data structure object to provide new `first` method functionality
+* call `iterator_to_array` on node lists that for whatever reason are not properly casted to array by collection polyfill

@@ -201,21 +201,10 @@ class ASTHelper
      */
     public static function directiveDefinition(Node $definitionNode, string $name): ?DirectiveNode
     {
-        $collection = (collect(iterator_to_array($definitionNode->directives)));
-
-        // if ($definitionNode->name->value === 'threads') {
-        //     // dump($definitionNode);
-        //     // dump($definitionNode->directives);
-        //     // dump(iterator_to_array($definitionNode->directives));
-        //     dump($collection);
-        //     // dump($collection->first(function ($n) {
-        //     //     return $n;
-        //     // }));
-        // }
-
-        return $collection->first(function (DirectiveNode $directiveDefinitionNode) use ($name): bool {
-            return $directiveDefinitionNode->name->value === $name;
-        });
+        return (collect(iterator_to_array($definitionNode->directives)))
+            ->first(function (DirectiveNode $directiveDefinitionNode) use ($name): bool {
+                return $directiveDefinitionNode->name->value === $name;
+            });
     }
 
     /**
