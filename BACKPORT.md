@@ -56,3 +56,7 @@ This file needed some heavy modification to prep the schema and execute the quer
 
 * use a polyfill version of the Laravel 5/6 collection data structure object to provide new `first` method functionality
 * call `iterator_to_array` on node lists that for whatever reason are not properly casted to array by collection polyfill
+
+## Context
+
+* use Auth facade in place of request `user` method call (prevents need to extend request object)
