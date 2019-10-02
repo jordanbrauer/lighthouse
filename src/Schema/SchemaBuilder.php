@@ -46,7 +46,6 @@ class SchemaBuilder
         $this->typeRegistry->setDocumentAST($documentAST);
 
         // Always set Query since it is required
-
         $config->setQuery(
             $this->typeRegistry->get('Query')
         );
