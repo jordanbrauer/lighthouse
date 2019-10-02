@@ -60,3 +60,8 @@ This file needed some heavy modification to prep the schema and execute the quer
 ## Context
 
 * use Auth facade in place of request `user` method call (prevents need to extend request object)
+
+## Directive Namespacer
+
+* more commenting out of all event dispatcher DI and event fire calls
+* provide closure to `filter` call on collection object to prevent missing argument exceptions
