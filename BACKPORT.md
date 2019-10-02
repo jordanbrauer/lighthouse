@@ -73,3 +73,7 @@ This file needed some heavy modification to prep the schema and execute the quer
 ## Directive Factory
 
 * use collection polyfill to provide new laravel functionality that we (Dealsix) lacks
+
+## Field Factory
+
+* comment out DI for validation factory and use facade directly in calling code
