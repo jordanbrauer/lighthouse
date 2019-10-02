@@ -78,6 +78,10 @@ This file needed some heavy modification to prep the schema and execute the quer
 
 * comment out DI for validation factory and use facade directly in calling code
 
+## Field Value
+
+* change config calls to call consumer (published) config file before trying package's
+
 ## Resolver Provider
 
 * remove check for resolvers implementing a `resolve` method (to be removed in Lighthouse v5 anyways) in favour of always calling `__invoke`

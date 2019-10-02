@@ -172,11 +172,11 @@ class FieldValue
     {
         switch ($this->getParentName()) {
             case 'Query':
-                return (array) config('lighthouse.namespaces.queries');
+                return (array) config('lighthouse::namespaces.queries', config('lighthouse.namespaces.queries'));
             case 'Mutation':
-                return (array) config('lighthouse.namespaces.mutations');
+                return (array) config('lighthouse::namespaces.mutations', config('lighthouse.namespaces.mutations'));
             case 'Subscription':
-                return (array) config('lighthouse.namespaces.subscriptions');
+                return (array) config('lighthouse::namespaces.subscriptions', config('lighthouse.namespaces.subscriptions'));
             default:
                return [];
         }
