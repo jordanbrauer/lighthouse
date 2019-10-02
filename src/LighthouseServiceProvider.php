@@ -54,25 +54,14 @@ class LighthouseServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
-     * @param  \Illuminate\Validation\Factory  $validationFactory
-     * @param  \Illuminate\Contracts\Config\Repository  $configRepository
      * @return void
      */
     public function boot(): void
     {
-        // $this->publishes([
-        //     __DIR__.'/../config/config.php' => $this->app->make('path.config').DIRECTORY_SEPARATOR.'lighthouse.php',
-        // ], 'config');
-
-        // $this->publishes([
-        //     __DIR__.'/../assets/default-schema.graphql' => $configRepository->get('lighthouse.schema.register'),
-        // ], 'schema');
-
-        // $this->loadRoutesFrom(__DIR__.'/Support/Http/routes.php');
+        $this->package('nuwave/lighthouse', 'lighthouse', __DIR__.'/../');
         \Route::group([], function () {
             require __DIR__.'/Support/Http/routes.php';
         });
-
         \Validator::resolver(function ($translator, array $data, array $rules, array $messages, array $customAttributes): Validator {
             // This determines whether we are resolving a GraphQL field
             return Arr::has($customAttributes, ['root', 'context', 'resolveInfo'])
@@ -82,88 +71,53 @@ class LighthouseServiceProvider extends ServiceProvider
     }
 
     /**
-     * Load routes from provided path.
-     *
-     * @param  string  $path
-     * @return void
-     */
-    protected function loadRoutesFrom($path): void
-    {
-        if (Str::contains($this->app->version(), 'Lumen')) {
-            require realpath($path);
-
-            return;
-        }
-
-        parent::loadRoutesFrom($path);
-    }
-
-    /**
      * Register any application services.
      *
      * @return void
      */
     public function register(): void
     {
-        $config = $this->app['config']->get('lighthouse', []);
-        $this->app['config']->set('lighthouse', array_merge(require __DIR__.'/../config/config.php', $config));
-        // $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'lighthouse');
-
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'lighthouse');
         $this->app->singleton(GraphQL::class);
-
         $this->app->singleton(DirectiveFactory::class);
         $this->app->singleton(NodeRegistry::class);
         $this->app->singleton(TypeRegistry::class);
         $this->app->singleton(CreatesContext::class, ContextFactory::class);
         $this->app->singleton(CanStreamResponse::class, ResponseStream::class);
-
         $this->app->bind(CreatesResponse::class, SingleResponse::class);
-
         $this->app->bind(GlobalIdContract::class, GlobalId::class);
-
         $this->app->singleton(GraphQLRequest::class, function ($app): GraphQLRequest {
             /** @var \Illuminate\Http\Request $request */
             $request = $app->make('request');
 
-            return Str::startsWith(
-                $request->header('Content-Type'),
-                'multipart/form-data'
-            )
+            return Str::startsWith($request->header('Content-Type'), 'multipart/form-data')
                 ? new MultipartFormRequest($request)
                 : new LighthouseRequest($request);
         });
-
         $this->app->singleton(SchemaSourceProvider::class, function (): SchemaStitcher {
-            return new SchemaStitcher(
-                config('lighthouse.schema.register', '')
-            );
+            // NOTE: read from consumer config first!
+            return new SchemaStitcher(config('lighthouse::schema.register', config('lighthouse.schema.register')));
         });
-
         $this->app->bind(ProvidesResolver::class, ResolverProvider::class);
         $this->app->bind(ProvidesSubscriptionResolver::class, function (): ProvidesSubscriptionResolver {
             return new class implements ProvidesSubscriptionResolver {
                 public function provideSubscriptionResolver(FieldValue $fieldValue): Closure
                 {
-                    throw new Exception(
-                       'Add the SubscriptionServiceProvider to your config/app.php to enable subscriptions.'
-                   );
+                    throw new Exception('Add the SubscriptionServiceProvider to your config/app.php to enable subscriptions.');
+
+                    return function () {};
                 }
             };
         });
-
         $this->app->singleton(MiddlewareAdapter::class, function (Container $app): MiddlewareAdapter {
             // prefer using fully-qualified class names here when referring to Laravel-only or Lumen-only classes
             if ($app instanceof LaravelApplication) {
-                return new LaravelMiddlewareAdapter(
-                    $app->get(Router::class)
-                );
+                return new LaravelMiddlewareAdapter($app->get(Router::class));
             } elseif ($app instanceof LumenApplication) {
                 return new LumenMiddlewareAdapter($app);
             }
 
-            throw new Exception(
-                'Could not correctly determine Laravel framework flavor, got '.get_class($app).'.'
-            );
+            throw new Exception('Could not correctly determine Laravel framework flavor, got '.get_class($app).'.');
         });
 
         // if ($this->app->runningInConsole()) {
@@ -180,5 +134,19 @@ class LighthouseServiceProvider extends ServiceProvider
         //         ValidateSchemaCommand::class,
         //     ]);
         // }
+    }
+
+    /**
+     * Polyfill/stub method from Laravel 5/6 service providers
+     *
+     * @param string $source The source file path to the base (package provided) config
+     * @param string $name The name of the config key to get and set merged config from/to
+     * @return void
+     */
+    private function mergeConfigFrom(string $source, string $name): void
+    {
+        $config = $this->app['config']->get($name, []);
+
+        $this->app['config']->set($name, array_merge(require $source, $config));
     }
 }
