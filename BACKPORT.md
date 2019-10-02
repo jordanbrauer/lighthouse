@@ -87,3 +87,8 @@ This file needed some heavy modification to prep the schema and execute the quer
 
 * use Illuminate's file not found exception directly – not some stupid "contract"
 * use collection polyfill to provide functionality that we (Dealsix) are missing
+
+## Type Registry
+
+* use collection polyfill to provide functionality that we (Dealsix) are missing
+* call `iterator_to_array` on node lists that for whatever reason are not properly casted to array by collection polyfill

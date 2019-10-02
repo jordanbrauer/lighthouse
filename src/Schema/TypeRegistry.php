@@ -4,7 +4,7 @@ namespace Nuwave\Lighthouse\Schema;
 
 use Closure;
 use GraphQL\Type\Definition\Type;
-use TippingCanoe\Dealsix\Extensions\Illuminate\Support\Collection;
+use Illuminate\Support\Collection;
 use Nuwave\Lighthouse\Support\Utils;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\EnumType;
@@ -161,7 +161,6 @@ class TypeRegistry
                 /** @var \Nuwave\Lighthouse\Support\Contracts\TypeResolver $typeResolver */
                 $typeResolver = $this->directiveFactory->createSingleDirectiveOfType($definition, TypeResolver::class);
 
-
                 if ($typeResolver) {
                     return $typeResolver->resolveNode($value);
                 }
@@ -296,18 +295,13 @@ class TypeRegistry
         return function () use ($definition): array {
             return (collect(iterator_to_array($definition->fields)))
                 ->mapWithKeys(function (FieldDefinitionNode $fieldDefinition) use ($definition): array {
-                    // dump($fieldDefinition);
                     $fieldValue = new FieldValue(
                         new TypeValue($definition),
                         $fieldDefinition
                     );
 
-                    $r = app(FieldFactory::class)->handle($fieldValue);
-                    // dump($r);
-
                     return [
-                        $fieldDefinition->name->value => $r,
-                        // $fieldDefinition->name->value => app(FieldFactory::class)->handle($fieldValue),
+                        $fieldDefinition->name->value => app(FieldFactory::class)->handle($fieldValue),
                     ];
                 })
                 ->toArray();
