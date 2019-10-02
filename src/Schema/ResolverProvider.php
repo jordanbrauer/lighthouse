@@ -23,14 +23,6 @@ class ResolverProvider implements ProvidesResolver
     public function provideResolver(FieldValue $fieldValue): Closure
     {
         if ($fieldValue->parentIsRootType()) {
-            // TODO use only __invoke in v5
-            // $resolverClass = $this->findResolverClass($fieldValue, 'resolve');
-            // if ($resolverClass) {
-            //     return Closure::fromCallable(
-            //         [app($resolverClass), 'resolve']
-            //     );
-            // }
-
             $resolverClass = $this->findResolverClass($fieldValue, '__invoke');
             if ($resolverClass) {
                 return Closure::fromCallable(
@@ -43,10 +35,6 @@ class ResolverProvider implements ProvidesResolver
                     "Could not locate a default resolver for the field {$fieldValue->getFieldName()}"
                 );
             }
-        }
-
-        if ($fieldValue->getFieldName() === 'threads') {
-            dump($fieldValue->getReturnType());
         }
 
         return Closure::fromCallable(

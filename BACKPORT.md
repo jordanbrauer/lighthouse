@@ -77,3 +77,8 @@ This file needed some heavy modification to prep the schema and execute the quer
 ## Field Factory
 
 * comment out DI for validation factory and use facade directly in calling code
+
+## Resolver Provider
+
+* remove check for resolvers implementing a `resolve` method (to be removed in Lighthouse v5 anyways) in favour of always calling `__invoke`
+* append "`Resolver`" to the studyly cased field name to attempt finding a class with the name (hard coded for now lol...)
