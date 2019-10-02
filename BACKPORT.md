@@ -73,6 +73,7 @@ This file needed some heavy modification to prep the schema and execute the quer
 ## Directive Factory
 
 * use collection polyfill to provide new laravel functionality that we (Dealsix) lacks
+* call `iterator_to_array` on node lists that for whatever reason are not properly casted to array by collection polyfill
 
 ## Field Factory
 
