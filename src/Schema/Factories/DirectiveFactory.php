@@ -182,7 +182,7 @@ class DirectiveFactory
      */
     public function createAssociatedDirectivesOfType(Node $node, string $directiveClass): Collection
     {
-        return (collect($node->directives))
+        return (collect(iterator_to_array($node->directives)))
             ->map(function (DirectiveNode $directive) use ($node): Directive {
                 return $this->create($directive->name->value, $node);
             })
