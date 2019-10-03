@@ -3,7 +3,7 @@
 namespace Nuwave\Lighthouse\Schema\Source;
 
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
+use Nuwave\Lighthouse\Support\Collection;
 use Illuminate\Filesystem\FileNotFoundException;
 
 class SchemaStitcher implements SchemaSourceProvider
@@ -59,7 +59,7 @@ class SchemaStitcher implements SchemaSourceProvider
             self::throwFileNotFoundException($path);
         }
 
-        return (collect(file($path)))
+        return (new Collection(file($path)))
             ->map(function (string $line) use ($path): string {
                 if (! Str::startsWith(trim($line), '#import ')) {
                     return rtrim($line, PHP_EOL).PHP_EOL;

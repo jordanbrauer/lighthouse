@@ -4,7 +4,7 @@ namespace Nuwave\Lighthouse\Schema;
 
 use Closure;
 use GraphQL\Type\Definition\Type;
-use Illuminate\Support\Collection;
+use Nuwave\Lighthouse\Support\Collection;
 use Nuwave\Lighthouse\Support\Utils;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\EnumType;
@@ -209,7 +209,7 @@ class TypeRegistry
         return new EnumType([
             'name' => $enumDefinition->name->value,
             'description' => data_get($enumDefinition->description, 'value'),
-            'values' => (collect(iterator_to_array($enumDefinition->values)))
+            'values' => (new Collection($enumDefinition->values))
                 ->mapWithKeys(function (EnumValueDefinitionNode $field): array {
                     // Get the directive that is defined on the field itself
                     $directive = ASTHelper::directiveDefinition($field, 'enum');
@@ -275,7 +275,7 @@ class TypeRegistry
             'description' => data_get($objectDefinition->description, 'value'),
             'fields' => $this->resolveFieldsFunction($objectDefinition),
             'interfaces' => function () use ($objectDefinition): array {
-                return (collect($objectDefinition->interfaces))
+                return (new Collection($objectDefinition->interfaces))
                     ->map(function (NamedTypeNode $interface): Type {
                         return $this->get($interface->name->value);
                     })
@@ -293,7 +293,7 @@ class TypeRegistry
     protected function resolveFieldsFunction($definition): Closure
     {
         return function () use ($definition): array {
-            return (collect(iterator_to_array($definition->fields)))
+            return (new Collection($definition->fields))
                 ->mapWithKeys(function (FieldDefinitionNode $fieldDefinition) use ($definition): array {
                     $fieldValue = new FieldValue(
                         new TypeValue($definition),
@@ -427,7 +427,7 @@ class TypeRegistry
             'name' => $nodeName,
             'description' => data_get($unionDefinition->description, 'value'),
             'types' => function () use ($unionDefinition): array {
-                return (collect($unionDefinition->types))
+                return (new Collection($unionDefinition->types))
                     ->map(function (NamedTypeNode $type): Type {
                         return $this->get(
                             $type->name->value

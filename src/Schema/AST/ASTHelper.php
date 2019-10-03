@@ -7,7 +7,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Language\AST\NodeList;
-use Illuminate\Support\Collection;
+use Nuwave\Lighthouse\Support\Collection;
 use GraphQL\Language\AST\ValueNode;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Language\AST\ArgumentNode;
@@ -55,12 +55,12 @@ class ASTHelper
      */
     public static function mergeUniqueNodeList($original, $addition, bool $overwriteDuplicates = false): NodeList
     {
-        $newNames = (collect($addition))
+        $newNames = (new Collection($addition))
             ->pluck('name.value')
             ->filter()
             ->all();
 
-        $remainingDefinitions = (collect($original))
+        $remainingDefinitions = (new Collection($original))
             ->reject(function ($definition) use ($newNames, $overwriteDuplicates): bool {
                 $oldName = $definition->name->value;
                 $collisionOccurred = in_array(
@@ -128,7 +128,7 @@ class ASTHelper
      */
     public static function directiveHasArgument(DirectiveNode $directiveDefinition, string $name): bool
     {
-        return (collect($directiveDefinition->arguments))
+        return (new Collection($directiveDefinition->arguments))
             ->contains(function (ArgumentNode $argumentNode) use ($name): bool {
                 return $argumentNode->name->value === $name;
             });
@@ -142,7 +142,7 @@ class ASTHelper
      */
     public static function directiveArgValue(DirectiveNode $directive, string $name, $default = null)
     {
-        $arg = (collect(iterator_to_array($directive->arguments)))
+        $arg = (new Collection($directive->arguments))
             ->first(function (ArgumentNode $argumentNode) use ($name): bool {
                 return $argumentNode->name->value === $name;
             });
@@ -201,7 +201,7 @@ class ASTHelper
      */
     public static function directiveDefinition(Node $definitionNode, string $name): ?DirectiveNode
     {
-        return (collect(iterator_to_array($definitionNode->directives)))
+        return (new Collection($definitionNode->directives))
             ->first(function (DirectiveNode $directiveDefinitionNode) use ($name): bool {
                 return $directiveDefinitionNode->name->value === $name;
             });

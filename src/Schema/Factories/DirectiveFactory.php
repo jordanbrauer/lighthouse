@@ -5,7 +5,7 @@ namespace Nuwave\Lighthouse\Schema\Factories;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use GraphQL\Language\AST\Node;
-use Illuminate\Support\Collection;
+use Nuwave\Lighthouse\Support\Collection;
 use GraphQL\Language\AST\DirectiveNode;
 use Nuwave\Lighthouse\Schema\DirectiveNamespacer;
 use Nuwave\Lighthouse\Support\Contracts\Directive;
@@ -182,7 +182,7 @@ class DirectiveFactory
      */
     public function createAssociatedDirectivesOfType(Node $node, string $directiveClass): Collection
     {
-        return (collect(iterator_to_array($node->directives)))
+        return (new Collection($node->directives))
             ->map(function (DirectiveNode $directive) use ($node): Directive {
                 return $this->create($directive->name->value, $node);
             })
