@@ -6,6 +6,7 @@ use Illuminate\Support\Collection as LaravelCollection;
 use JsonSerializable;
 use Traversable;
 use IteratorAggregate;
+use Closure;
 
 /**
  * A collection of items with various methods to operate on them with.
